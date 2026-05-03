@@ -1,0 +1,14 @@
+{
+  "name": "veloce",
+  "private": true,
+  "scripts": {
+    "dev": "pm2 start ecosystem.config.cjs",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "cd backend && uvicorn app.main:asgi_app --host 0.0.0.0 --port 8000 --reload",
+    "stop": "pm2 stop ecosystem.config.cjs",
+    "logs": "pm2 logs"
+  },
+  "devDependencies": {
+    "pm2": "^5.4.0"
+  }
+}
