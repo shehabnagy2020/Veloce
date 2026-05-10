@@ -1,7 +1,9 @@
+'use client';
+
 import { io, Socket } from 'socket.io-client';
 import { getToken } from './api';
 
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || '';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || '';
 
 let socket: Socket | null = null;
 

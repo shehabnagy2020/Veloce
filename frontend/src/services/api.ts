@@ -1,18 +1,21 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | undefined>;
 }
 
 export function getToken(): string | null {
+  if (typeof window === 'undefined') return null;
   return localStorage.getItem('veloce_token');
 }
 
 export function setToken(token: string): void {
+  if (typeof window === 'undefined') return;
   localStorage.setItem('veloce_token', token);
 }
 
 export function clearToken(): void {
+  if (typeof window === 'undefined') return;
   localStorage.removeItem('veloce_token');
 }
 

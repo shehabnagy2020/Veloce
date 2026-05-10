@@ -1,5 +1,7 @@
+'use client';
+
 import { create } from 'zustand';
-import { apiFetch, setToken, clearToken } from '../services/api';
+import { apiFetch, setToken, clearToken, getToken } from '../services/api';
 
 interface User {
   id: string;
@@ -22,7 +24,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  isAuthenticated: !!localStorage.getItem('veloce_token'),
+  isAuthenticated: typeof window !== 'undefined' && !!getToken(),
   isLoading: false,
 
   login: async (email, password) => {

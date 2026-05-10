@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Container, Grid, Card, Text, Group, Badge, Stack, Image, Button, Divider, Modal, ActionIcon } from '@mantine/core';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Container, Grid, Card, Text, Group, Stack, Image, Button, Divider, Modal, ActionIcon } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useListingStore, ListingDetail } from '../store/listing';
+import { useListingStore } from '../store/listing';
 import { useFavorites } from '../hooks/useFavorites';
 import { PriceIndicator } from '../components/search/PriceIndicator';
 import { VerificationBadge } from '../components/badges/VerificationBadge';
@@ -14,28 +14,26 @@ function formatPrice(price: number): string {
   return new Intl.NumberFormat('en-EG', { style: 'decimal', maximumFractionDigits: 0 }).format(price) + ' EGP';
 }
 
-export function ListingDetailPage() {
+export function ListingDetailPage({ listingId }: { listingId?: string }) {
   const { t } = useTranslation();
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { currentListing, isLoading, error, fetchListing } = useListingStore();
   const { isFavorited, toggleFavorite } = useFavorites();
   const [drivewayOpen, setDrivewayOpen] = useState(false);
 
   useEffect(() => {
-    if (id) fetchListing(id);
-  }, [id]);
+    if (listingId) fetchListing(listingId);
+  }, [listingId]);
 
   if (isLoading) return <Container py={40}><Text c="dimmed" ta="center">{t('common.loading')}</Text></Container>;
   if (error) return <Container py={40}><Text c="red" ta="center">{t('common.error')}</Text></Container>;
-  if (!currentListing) return <Container py={40}><Text c="dimmed" ta="center">Listing not found</Text></Container>;
+  if (!currentListing) return <Container py={40}><Text c="dimmed" ta="center">{t('common.noResults')}</Text></Container>;
 
   const listing = currentListing;
 
   return (
     <Container size="lg" py="xl">
       <Grid>
-        <Grid.Col span={7}>
+        <Grid.Col span={{ base: 12, md: 7 }}>
           <Stack gap="md">
             {listing.photos && listing.photos.length > 0 ? (
               listing.photos.sort((a, b) => a.position - b.position).map((photo) => (
@@ -49,7 +47,7 @@ export function ListingDetailPage() {
           </Stack>
         </Grid.Col>
 
-        <Grid.Col span={5}>
+        <Grid.Col span={{ base: 12, md: 5 }}>
           <Card bg="#12151C" p="lg" radius="md" style={{ border: '1px solid #1A1F2B' }}>
             <Group justify="space-between" align="flex-start">
               <div>
@@ -143,3 +141,5 @@ export function ListingDetailPage() {
     </Container>
   );
 }
+
+export default ListingDetailPage;

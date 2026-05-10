@@ -1,10 +1,12 @@
+'use client';
+
 import { useEffect } from 'react';
 import { Box, Group, Paper, ScrollArea, Stack, Text, Badge, UnstyledButton } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { useMessagingStore } from '../store/messaging';
 import { ChatWindow } from '../components/messaging/ChatWindow';
 
-export function MessagesPage() {
+export function MessagesPage({ conversationId }: { conversationId?: string }) {
   const { t } = useTranslation();
   const conversations = useMessagingStore((s) => s.conversations);
   const activeConversationId = useMessagingStore((s) => s.activeConversationId);
@@ -19,13 +21,21 @@ export function MessagesPage() {
     return cleanup;
   }, []);
 
+  // Open the specific conversation if provided via URL params
+  useEffect(() => {
+    if (conversationId) {
+      openConversation(conversationId);
+    }
+  }, [conversationId]);
+
   const activeConv = conversations.find((c) => c.id === activeConversationId);
 
   return (
-    <Group h="calc(100vh - 80px)" gap={0} align="stretch" style={{ backgroundColor: '#0B0E14' }}>
+    <Group h="calc(100vh - 130px)" gap={0} align="stretch" style={{ backgroundColor: '#0B0E14' }}>
       <Stack
         style={{ width: 320, borderRight: '1px solid #1A1F2B', backgroundColor: '#0B0E14' }}
         gap={0}
+        visibleFrom="sm"
       >
         <Paper p="md" style={{ borderBottom: '1px solid #1A1F2B' }}>
           <Text fw={700} size="lg">{t('messaging.title')}</Text>
@@ -50,9 +60,7 @@ export function MessagesPage() {
             >
               <Group justify="space-between" wrap="nowrap">
                 <Box style={{ flex: 1, overflow: 'hidden' }}>
-                  <Text size="sm" fw={600} truncate>
-                    {conv.other_user_name || t('messaging.unknownUser')}
-                  </Text>
+                  <Text size="sm" fw={600} truncate>{conv.other_user_name || t('messaging.unknownUser')}</Text>
                   <Text size="xs" c="dimmed" truncate>
                     {conv.last_message || ''}
                   </Text>
@@ -83,3 +91,5 @@ export function MessagesPage() {
     </Group>
   );
 }
+
+export default MessagesPage;

@@ -1,11 +1,14 @@
-import { Container, Grid, Card, Text, Group, Badge, SimpleGrid, Pagination, Stack, Button } from '@mantine/core';
+'use client';
+
+import { Container, Grid, Card, Text, Group, SimpleGrid, Pagination } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import { useListingStore, ListingItem } from '../store/listing';
+import { useListingStore } from '../store/listing';
+import type { ListingItem } from '../store/listing';
 import { SearchFilters } from '../components/search/SearchFilters';
 import { PriceIndicator } from '../components/search/PriceIndicator';
 import { useListingSearchParams } from '../hooks/useSearchParams';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { IconMapPin, IconEngine, IconCalendar } from '@tabler/icons-react';
 
 function formatPrice(price: number): string {
@@ -13,7 +16,7 @@ function formatPrice(price: number): string {
 }
 
 function ListingCard({ listing }: { listing: ListingItem }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   return (
     <Card
       shadow="sm"
@@ -21,7 +24,7 @@ function ListingCard({ listing }: { listing: ListingItem }) {
       radius="md"
       bg="#12151C"
       style={{ cursor: 'pointer', border: '1px solid #1A1F2B' }}
-      onClick={() => navigate(`/listings/${listing.id}`)}
+      onClick={() => router.push(`/listings/${listing.id}`)}
     >
       {listing.thumbnail_url && (
         <Card.Section>
@@ -69,20 +72,20 @@ export function SearchPage() {
   return (
     <Container size="xl" py="xl">
       <Grid>
-        <Grid.Col span={3}>
-          <Card bg="#12151C" p="md" radius="md" style={{ border: '1px solid #1A1F2B' }}>
+        <Grid.Col span={{ base: 12, md: 4, lg: 3 }}>
+          <Card bg="#12151C" p="lg" radius="md" style={{ border: '1px solid #1A1F2B' }}>
             <Text fw={700} size="lg" c="white" mb="md">{t('search.filters')}</Text>
             <SearchFilters filters={filters} onChange={updateFilters} />
           </Card>
         </Grid.Col>
-        <Grid.Col span={9}>
+        <Grid.Col span={{ base: 12, md: 8, lg: 9 }}>
           <Text size="sm" c="dimmed" mb="md">
             {t('search.results', { count: total })}
           </Text>
           {isLoading ? (
             <Text c="dimmed" ta="center" py={40}>{t('common.loading')}</Text>
           ) : listings.length === 0 ? (
-            <Text c="dimmed" ta="center" py={40}>{t('search.noResults')}</Text>
+            <Text c="dimmed" ta="center" py={40}>{t('common.noResults')}</Text>
           ) : (
             <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
               {listings.map((listing) => (
@@ -100,3 +103,5 @@ export function SearchPage() {
     </Container>
   );
 }
+
+export default SearchPage;
